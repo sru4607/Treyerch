@@ -84,20 +84,23 @@ namespace Invector.vCharacterController
 
         protected virtual void InputHandle()
         {
-            if (allowMovement)
+            if (Cursor.lockState == CursorLockMode.Locked)
             {
-                SlapInput();
-
-                if (!isSlapping && finishedSlap)
+                if (allowMovement)
                 {
-                    MoveInput();
-                    SprintInput();
-                    StrafeInput();
-                    JumpInput();
-                }
-            }
+                    SlapInput();
 
-            CameraInput();
+                    if (!isSlapping && finishedSlap)
+                    {
+                        MoveInput();
+                        SprintInput();
+                        StrafeInput();
+                        JumpInput();
+                    }
+                }
+
+                CameraInput();
+            }
         }
 
         public virtual void MoveInput()
