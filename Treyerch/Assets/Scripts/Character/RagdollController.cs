@@ -10,6 +10,8 @@ public class RagdollController : MonoBehaviour
     [TabGroup("Controls"), PropertyOrder(-1)]
     [ReadOnly]
     public bool isRagdoll = true;
+    [TabGroup("Controls"), PropertyOrder(-1)]
+    public float ragdollIdleMax = 3f;
 
     /*
     [TabGroup("Controls"), PropertyOrder(-1)]
@@ -65,6 +67,10 @@ public class RagdollController : MonoBehaviour
     private Quaternion defaultRigidbodyRotation;
 
     private Vector3 getUpPosition;
+    private bool readyForNextState = true;
+    private float realVelocity;
+    private Vector3 positionLastFrame;
+    private float ragdollTimer;
 
     public void Start()
     {
@@ -76,7 +82,28 @@ public class RagdollController : MonoBehaviour
     {
         if(Input.GetKeyUp(KeyCode.R))
         {
-            ToggleRagdoll();
+            if (readyForNextState && !isRagdoll && thirdPersonCamera.target == transform)
+            {
+                readyForNextState = false;
+                TurnOnRagdoll();
+            }
+        }
+
+        if(isRagdoll)
+        {
+            realVelocity = Mathf.Abs(Vector3.Distance(ragdollChest.position, positionLastFrame)) / Time.deltaTime;
+            positionLastFrame = ragdollChest.position;
+
+            if(realVelocity < 0.1f)
+            {
+                ragdollTimer += Time.deltaTime;
+
+                if(ragdollTimer >= ragdollIdleMax)
+                {
+                    TurnOffRagdoll();
+                    ragdollTimer = 0;
+                }
+            }
         }
     }
 
@@ -88,6 +115,7 @@ public class RagdollController : MonoBehaviour
         defaultRigidbodyRotation = ragdollChest.transform.localRotation;
 
         thirdPersonCamera.StartCoroutine(thirdPersonCamera.CameraChangeDelay(0, 2f, ragdollChest.transform));
+
         playerRigidbody.isKinematic = true;
         playerCollider.isTrigger = true;
 
@@ -101,6 +129,7 @@ public class RagdollController : MonoBehaviour
         }
 
         ragdollChest.velocity = currentVelocity * 8;
+        readyForNextState = true;
     }
 
     public void TurnOffRagdoll()
@@ -131,7 +160,7 @@ public class RagdollController : MonoBehaviour
             ragdollCollider.attachedRigidbody.isKinematic = true;
         }
 
-        thirdPersonCamera.StartCoroutine(thirdPersonCamera.CameraChangeDelay(0.1f, 2f, transform));
+        thirdPersonCamera.StartCoroutine(thirdPersonCamera.CameraChangeDelay(0.1f, 0.2f, transform));
 
         ragdollChest.position = defaultRigidbodyPosition;
         ragdollChest.transform.parent = null;
@@ -148,5 +177,7 @@ public class RagdollController : MonoBehaviour
 
         characterInput.allowMovement = true;
         playerRigidbody.velocity = Vector3.zero;
+
+        readyForNextState = true;
     }
 }
