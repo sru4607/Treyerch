@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 463644}
   - component: {fileID: 3301182}
   - component: {fileID: 2381460}
+  - component: {fileID: 3514004073602049359}
   m_Layer: 0
   m_Name: SM_Bld_Apartment_Corner_01
   m_TagString: Untagged
@@ -77,3 +78,16 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+--- !u!65 &3514004073602049359
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 173494}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 5.1955986, y: 2.999999, z: 5.195599}
+  m_Center: {x: -2.4022007, y: 1.4999995, z: -2.4022005}

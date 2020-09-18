@@ -11,6 +11,11 @@ GameObject:
   - component: {fileID: 479420}
   - component: {fileID: 3330690}
   - component: {fileID: 2359360}
+  - component: {fileID: 6418322854095203443}
+  - component: {fileID: 8338876963425998212}
+  - component: {fileID: 6769119745941469362}
+  - component: {fileID: 1210642958620531162}
+  - component: {fileID: 1946769691989531568}
   m_Layer: 0
   m_Name: SM_Bld_OfficeSquare_Roof_01
   m_TagString: Untagged
@@ -77,3 +82,68 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+--- !u!65 &6418322854095203443
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 111276}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 15.550177, y: 0.14334112, z: 15.550177}
+  m_Center: {x: -7.500003, y: 0.07167056, z: -7.499997}
+--- !u!65 &8338876963425998212
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 111276}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.6323023, y: 0.6361652, z: 15.550177}
+  m_Center: {x: -14.9589405, y: 0.3180826, z: -7.499997}
+--- !u!65 &6769119745941469362
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 111276}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.64215136, y: 0.6361652, z: 15.550177}
+  m_Center: {x: -0.04599023, y: 0.3180826, z: -7.499997}
+--- !u!65 &1210642958620531162
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 111276}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 15.550177, y: 0.6361652, z: 0.59892845}
+  m_Center: {x: -7.500003, y: 0.3180826, z: -14.975621}
+--- !u!65 &1946769691989531568
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 111276}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 15.550177, y: 0.6361652, z: 0.76130736}
+  m_Center: {x: -7.500003, y: 0.3180826, z: -0.10556251}
