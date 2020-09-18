@@ -12,6 +12,7 @@ namespace Invector.vCharacterController
         public KeyCode jumpInput = KeyCode.Space;
         public KeyCode strafeInput = KeyCode.Tab;
         public KeyCode sprintInput = KeyCode.LeftShift;
+        public int slapMouse = 0;
 
         [Header("Camera Input")]
         public string rotateCameraXInput = "Mouse X";
@@ -24,10 +25,15 @@ namespace Invector.vCharacterController
         [HideInInspector]
         public bool allowMovement = true;
 
+        [HideInInspector]
+        public bool isSlapping = false;
+        [HideInInspector]
+        public bool finishedSlap = true;
         #endregion
 
         protected virtual void Start()
         {
+            transform.parent = null;
             InitilizeController();
             InitializeTpCamera();
         }
@@ -80,10 +86,15 @@ namespace Invector.vCharacterController
         {
             if (allowMovement)
             {
-                MoveInput();
-                SprintInput();
-                StrafeInput();
-                JumpInput();
+                SlapInput();
+
+                if (!isSlapping && finishedSlap)
+                {
+                    MoveInput();
+                    SprintInput();
+                    StrafeInput();
+                    JumpInput();
+                }
             }
 
             CameraInput();
@@ -93,6 +104,22 @@ namespace Invector.vCharacterController
         {
             cc.input.x = Input.GetAxis(horizontalInput);
             cc.input.z = Input.GetAxis(verticallInput);
+        }
+
+        public void SlapInput()
+        {
+            if (cc.isGrounded)
+            {
+                if (Input.GetMouseButton(slapMouse))
+                {
+                    finishedSlap = false;
+                    isSlapping = true;
+                }
+                else
+                {
+                    isSlapping = false;
+                }
+            }
         }
 
         protected virtual void CameraInput()

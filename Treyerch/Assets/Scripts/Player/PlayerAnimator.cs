@@ -13,10 +13,14 @@ public class PlayerAnimator : MonoBehaviour
     public float runSpeed = 7f;
     public float idleTimerMovementCutoff = 2f;
     public float idleTimerMax = 5f;
+    public float slapTimerMax = 1.5f;
 
+    private float slapTimer;
     private float idleTimer;
     private bool hasJumped;
+    private bool hasSlapped;
 
+    private bool leftSlap;
 
     // Start is called before the first frame update
     void Start()
@@ -31,6 +35,51 @@ public class PlayerAnimator : MonoBehaviour
         {
             if (thirdPersonController.isGrounded)
             {
+                if (ragdollController.characterInput.isSlapping)
+                {
+                    idleTimer = 0;
+                    slapTimer = 0;
+                    if (!hasSlapped)
+                    {
+                        animator.SetBool("isJumping", false);
+                        animator.SetBool("isIdling", false);
+                        animator.SetBool("isRunning", false);
+                        animator.SetBool("isWalking", false);
+
+                        hasSlapped = true;
+
+                        if (leftSlap)
+                        {
+                            animator.SetBool("leftSlap", true);
+                            leftSlap = false;
+                        }
+                        else
+                        {
+                            animator.SetBool("leftSlap", false);
+                            leftSlap = true;
+                        }
+                        animator.SetTrigger("doSlap");
+                        ragdollController.playerRigidbody.isKinematic = true;
+                        animator.SetBool("isSlapping", true);
+                    }
+                }
+                else if (ragdollController.characterInput.finishedSlap == false)
+                {
+                    slapTimer += Time.deltaTime;
+
+                    animator.SetBool("isSlapping", false);
+                    ragdollController.playerRigidbody.velocity = Vector3.zero;
+                    hasSlapped = false;
+
+                    if (slapTimer >= slapTimerMax)
+                    {
+                        ragdollController.playerRigidbody.isKinematic = false;
+                        ragdollController.characterInput.finishedSlap = true;
+                        ragdollController.characterInput.cc.inputSmooth = Vector3.zero;
+                        ragdollController.characterInput.cc.input = Vector3.zero;
+                    }
+                }
+
                 if (hasJumped)
                 {
                     hasJumped = false;
@@ -77,21 +126,21 @@ public class PlayerAnimator : MonoBehaviour
             }
             else
             {
-                animator.SetFloat("WalkSpeed", 1.2f);
-                if (animator.GetBool("isRunning") == false)
-                {     
+                if (!hasJumped)
+                {
+                    animator.SetTrigger("doJump");
+                    animator.SetFloat("WalkSpeed", 1.2f);
+
                     animator.SetBool("isJumping", true);
-                    animator.SetBool("isIdling", false);
-                    idleTimer = 0;
                     animator.SetBool("isRunning", true);
+
+                    animator.SetBool("isIdling", false);
                     animator.SetBool("isWalking", false);
 
                     hasJumped = true;
                 }
-                else
-                {
-                    animator.SetBool("isJumping", false);
-                }            
+
+                idleTimer = 0;
             }
         }
         else

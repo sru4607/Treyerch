@@ -191,6 +191,7 @@ public class vThirdPersonCamera : MonoBehaviour
             this.newTarget = newTarget;
             tempPos.transform.position = currentTarget.transform.position;
             currentTarget = tempPos.transform;
+            target = currentTarget;
 
             yield return new WaitForSeconds(delay);
 
@@ -206,6 +207,7 @@ public class vThirdPersonCamera : MonoBehaviour
             {
                 currentTime = lerpDelay;
                 currentTarget = newTarget;
+                target = currentTarget;
                 isLerping = false;
             }
         }
