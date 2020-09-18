@@ -20,6 +20,8 @@ public class ObjectiveManager : MonoBehaviour
     public ManagerEventActivated m_EventActivated; 
     public GameObject m_TextObject;
     public GameObject m_ObjectiveContent;
+    public GameObject m_MainCanvas;
+    public GameObject m_TaskCompletePrefab;
 #endregion
 
     //Get the instance of the manager
@@ -48,11 +50,13 @@ public class ObjectiveManager : MonoBehaviour
         {
             GameObject created = Instantiate(m_TextObject, m_ObjectiveContent.transform);
             created.GetComponent<Text>().text = toAdd.m_ObjectiveData.objectiveTitle;
+            toAdd.PropigateParents();
+            toAdd.m_TextElement=created;
         }
         if (m_EventCompleted == null)
             m_EventCompleted = new ManagerEventCompletion();
         m_EventCompleted.AddListener(EventCompleted);
-
+        
         //To-Do (Populate Menu with all objectives)
     }
     int SortBySortValues(Objective a, Objective b){
@@ -83,6 +87,7 @@ public class ObjectiveManager : MonoBehaviour
             }
         }
         Debug.Log("Event Attempt Completed:" + completedObjective.m_ObjectiveData.objectiveTitle);
+        Destroy(Instantiate(m_TaskCompletePrefab, m_MainCanvas.transform),3.5f);
         completedObjective.ObjectiveCompletedEvent.Invoke();
     }
     //To-Do (Activate Quests)

@@ -110,6 +110,7 @@ public class RagdollController : MonoBehaviour
     public void TurnOnRagdoll()
     {
         isRagdoll = true;
+        characterInput.cc.Sprint(false);
         Vector3 currentVelocity = playerRigidbody.velocity;
         defaultRigidbodyPosition = ragdollChest.transform.localPosition;
         defaultRigidbodyRotation = ragdollChest.transform.localRotation;

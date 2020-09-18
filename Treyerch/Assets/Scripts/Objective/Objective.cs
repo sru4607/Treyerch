@@ -1,7 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Events;   
+using UnityEngine.Events;
+using UnityEngine.UI;
+
 public class ObjectiveCompletion : UnityEvent{}
 public class ObjectiveActivation : UnityEvent{}
 public class Objective : MonoBehaviour
@@ -13,8 +15,11 @@ public class Objective : MonoBehaviour
     public bool m_Displayed;
     public bool m_Activated;
     public Objective[] m_prerequisites;
+    public List<Objective> children;
+    public GameObject m_TextElement;
     //Links events and initializes them
     void Start(){
+        children = new List<Objective>();
         if (ObjectiveCompletedEvent == null)
             ObjectiveCompletedEvent = new ObjectiveCompletion();
         ObjectiveCompletedEvent.AddListener(EventCompleted);
@@ -26,10 +31,17 @@ public class Objective : MonoBehaviour
     void EventCompleted(){
         m_Completed = true;
         m_Displayed = false;
+        m_TextElement.GetComponent<Text>().color = Color.green;
     }
     //Triggers upon activation
     void EventActivated(){
         m_Activated = true;
+    }
+
+    public void PropigateParents(){
+        foreach(Objective parent in m_prerequisites){
+            parent.children.Add(this);
+        }
     }
 
 }
