@@ -48,11 +48,12 @@ public class ObjectiveManager : MonoBehaviour
         {
             GameObject created = Instantiate(m_TextObject, m_ObjectiveContent.transform);
             created.GetComponent<Text>().text = toAdd.m_ObjectiveData.objectiveTitle;
+            toAdd.PropigateParents();
         }
         if (m_EventCompleted == null)
             m_EventCompleted = new ManagerEventCompletion();
         m_EventCompleted.AddListener(EventCompleted);
-
+        
         //To-Do (Populate Menu with all objectives)
     }
     int SortBySortValues(Objective a, Objective b){

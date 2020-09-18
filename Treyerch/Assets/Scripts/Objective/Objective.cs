@@ -13,8 +13,10 @@ public class Objective : MonoBehaviour
     public bool m_Displayed;
     public bool m_Activated;
     public Objective[] m_prerequisites;
+    public List<Objective> children;
     //Links events and initializes them
     void Start(){
+        children = new List<Objective>();
         if (ObjectiveCompletedEvent == null)
             ObjectiveCompletedEvent = new ObjectiveCompletion();
         ObjectiveCompletedEvent.AddListener(EventCompleted);
@@ -30,6 +32,12 @@ public class Objective : MonoBehaviour
     //Triggers upon activation
     void EventActivated(){
         m_Activated = true;
+    }
+
+    public void PropigateParents(){
+        foreach(Objective parent in m_prerequisites){
+            parent.children.Add(this);
+        }
     }
 
 }
