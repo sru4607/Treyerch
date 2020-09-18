@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 103073e68f8e06748b90595e865eb609, type: 3}
   m_Name: Test-Data-1_1
   m_EditorClassIdentifier: 
-  _objectiveTitle: Testing1_1
+  _objectiveTitle: 'Black Box to Red Zone (Pre Req: Gray Box)'
   _description: Testing Objective 1_1
   _icon: {fileID: 0}
-  _sortValue: 19
+  _sortValue: 11
