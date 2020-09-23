@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 401836}
   - component: {fileID: 3302322}
   - component: {fileID: 2349098}
+  - component: {fileID: 268863498718783527}
   m_Layer: 0
   m_Name: SM_Env_GrassPath_Straight_01
   m_TagString: Untagged
@@ -77,3 +78,16 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+--- !u!65 &268863498718783527
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 128872}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 5, y: 2.4314687, z: 5}
+  m_Center: {x: 2.5, y: -0.9940733, z: -2.5}

@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 481524}
   - component: {fileID: 3333942}
   - component: {fileID: 2376222}
+  - component: {fileID: 6553768859965524438}
   m_Layer: 0
   m_Name: SM_Prop_Barrier_01
   m_TagString: Untagged
@@ -77,3 +78,16 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+--- !u!65 &6553768859965524438
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 117208}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1.434761, y: 0.98252726, z: 0.3166698}
+  m_Center: {x: 0.0000038146973, y: 0.49126363, z: -0.013251826}

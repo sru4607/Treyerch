@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 408044}
   - component: {fileID: 3397326}
   - component: {fileID: 2359600}
+  - component: {fileID: 728802303044542274}
   m_Layer: 0
   m_Name: SM_Env_Road_Lines_01
   m_TagString: Untagged
@@ -77,3 +78,16 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+--- !u!65 &728802303044542274
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 136290}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 5, y: 2.1804886, z: 4.9999924}
+  m_Center: {x: -2.5, y: -1.0902443, z: -2.4999962}

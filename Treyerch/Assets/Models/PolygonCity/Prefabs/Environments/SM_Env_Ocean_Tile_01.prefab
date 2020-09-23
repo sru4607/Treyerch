@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 409754}
   - component: {fileID: 3342962}
   - component: {fileID: 2318672}
+  - component: {fileID: 7354661729546526291}
   m_Layer: 0
   m_Name: SM_Env_Ocean_Tile_01
   m_TagString: Untagged
@@ -77,3 +78,16 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+--- !u!65 &7354661729546526291
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 150134}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 30, y: 3.026794, z: 30.000004}
+  m_Center: {x: -14.995285, y: -2.2607572, z: 15.126102}

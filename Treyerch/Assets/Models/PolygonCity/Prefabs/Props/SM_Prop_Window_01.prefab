@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 448338}
   - component: {fileID: 3304056}
   - component: {fileID: 2381346}
+  - component: {fileID: 6285716518167287528}
   m_Layer: 0
   m_Name: SM_Prop_Window_01
   m_TagString: Untagged
@@ -77,3 +78,16 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+--- !u!65 &6285716518167287528
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 156756}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1.3032532, y: 2.312667, z: 0.36961842}
+  m_Center: {x: 0, y: 1.1563334, z: 0.18480921}

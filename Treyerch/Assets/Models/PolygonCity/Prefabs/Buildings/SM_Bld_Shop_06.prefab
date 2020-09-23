@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 481430}
   - component: {fileID: 3301052}
   - component: {fileID: 2382568}
+  - component: {fileID: 1586209256347033083}
   m_Layer: 0
   m_Name: SM_Bld_Shop_06
   m_TagString: Untagged
@@ -77,3 +78,16 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+--- !u!65 &1586209256347033083
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 113012}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 5.1752625, y: 3.0000005, z: 5.4557858}
+  m_Center: {x: -2.5, y: 1.5000002, z: -2.3597422}
