@@ -11,7 +11,9 @@ GameObject:
   - component: {fileID: 4895814929804092}
   - component: {fileID: 33451391479666776}
   - component: {fileID: 23266479183047896}
-  m_Layer: 0
+  - component: {fileID: 2319769330970495354}
+  - component: {fileID: 3554650918007607013}
+  m_Layer: 11
   m_Name: SM_Prop_Cigarette_Tray_01
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -77,3 +79,32 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+--- !u!65 &2319769330970495354
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1979557458371514}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.17242229, y: 0.113765806, z: 0.17982012}
+  m_Center: {x: -0.0030097961, y: 0.025808334, z: 0.0409334}
+--- !u!54 &3554650918007607013
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1979557458371514}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 1
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
