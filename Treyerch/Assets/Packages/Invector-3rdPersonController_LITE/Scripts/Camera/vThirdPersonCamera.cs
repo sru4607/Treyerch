@@ -2,7 +2,7 @@
 using Invector;
 using System.Collections;
 using UnityEngine;
-
+using UnityEngine.SceneManagement;
 public class vThirdPersonCamera : MonoBehaviour
 {
     #region inspector properties    
@@ -105,9 +105,23 @@ public class vThirdPersonCamera : MonoBehaviour
 
         if(Input.GetKeyUp(KeyCode.Escape))
         {
-            lockCursor = !lockCursor;
-            ToggleCursorLock(lockCursor);
-        }       
+            if(Cursor.lockState == CursorLockMode.None)
+            {
+                SceneManager.LoadScene("MainMenu");
+            }
+            else
+            {
+                ToggleCursorLock(false);
+            }
+        }     
+        
+        if(Cursor.lockState == CursorLockMode.None)
+        {
+            if (Input.GetMouseButtonDown(0))
+            {
+                ToggleCursorLock(true);
+            }
+        }
     }
 
     public void ToggleCursorLock(bool toggle)
