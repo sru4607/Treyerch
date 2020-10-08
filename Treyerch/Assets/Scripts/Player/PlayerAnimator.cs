@@ -35,7 +35,7 @@ public class PlayerAnimator : MonoBehaviour
         {
             if (thirdPersonController.isGrounded)
             {
-                if (ragdollController.characterInput.isSlapping)
+                if (ragdollController.characterInput.cc.isSlapping)
                 {
                     idleTimer = 0;
                     slapTimer = 0;
@@ -58,12 +58,13 @@ public class PlayerAnimator : MonoBehaviour
                             animator.SetBool("leftSlap", false);
                             leftSlap = true;
                         }
+                        ragdollController.playerRigidbody.velocity = Vector3.zero;
+                        ragdollController.playerRigidbody.angularVelocity = Vector3.zero;
                         animator.SetTrigger("doSlap");
-                        ragdollController.playerRigidbody.isKinematic = true;
                         animator.SetBool("isSlapping", true);
                     }
                 }
-                else if (ragdollController.characterInput.finishedSlap == false)
+                else if (ragdollController.characterInput.cc.finishedSlap == false)
                 {
                     slapTimer += Time.deltaTime;
 
@@ -73,8 +74,8 @@ public class PlayerAnimator : MonoBehaviour
 
                     if (slapTimer >= slapTimerMax)
                     {
-                        ragdollController.playerRigidbody.isKinematic = false;
-                        ragdollController.characterInput.finishedSlap = true;
+                        //ragdollController.playerRigidbody.isKinematic = false;
+                        ragdollController.characterInput.cc.finishedSlap = true;
                         ragdollController.characterInput.cc.inputSmooth = Vector3.zero;
                         ragdollController.characterInput.cc.input = Vector3.zero;
                     }

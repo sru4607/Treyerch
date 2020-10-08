@@ -12,6 +12,8 @@ public class RagdollController : MonoBehaviour
     public bool isRagdoll = true;
     [TabGroup("Controls"), PropertyOrder(-1)]
     public float ragdollIdleMax = 3f;
+    [TabGroup("Controls"), PropertyOrder(-1)]
+    public float impactRagdollForce = 2000f;
 
     /*
     [TabGroup("Controls"), PropertyOrder(-1)]
@@ -63,6 +65,10 @@ public class RagdollController : MonoBehaviour
     [TabGroup("Stored Componenets"), PropertyOrder(1)]
     public List<Collider> ragdollColliders = new List<Collider>();
 
+    private List<Vector3> defaultRigidBodyPositions = new List<Vector3>();
+    private List<Quaternion> defaultRigidBodyRotations = new List<Quaternion>();
+
+
     private Vector3 defaultRigidbodyPosition;
     private Quaternion defaultRigidbodyRotation;
 
@@ -76,9 +82,16 @@ public class RagdollController : MonoBehaviour
     {
         defaultRigidbodyPosition = ragdollChest.transform.localPosition;
         defaultRigidbodyRotation = ragdollChest.transform.localRotation;
+
+        foreach(Rigidbody rigidbody in ragdollRigidBodies)
+        {
+            defaultRigidBodyPositions.Add(rigidbody.transform.localPosition);
+            defaultRigidBodyRotations.Add(rigidbody.transform.localRotation);
+        }
+
     }
 
-    public void Update()
+    public void FixedUpdate()
     {
         if(Input.GetKeyUp(KeyCode.R))
         {
@@ -96,6 +109,7 @@ public class RagdollController : MonoBehaviour
 
             if(realVelocity < 0.1f)
             {
+                Debug.Log(realVelocity);
                 ragdollTimer += Time.deltaTime;
 
                 if(ragdollTimer >= ragdollIdleMax)
@@ -103,6 +117,41 @@ public class RagdollController : MonoBehaviour
                     TurnOffRagdoll();
                     ragdollTimer = 0;
                 }
+            }
+        }
+        else
+        {
+            ragdollTimer = 0;
+            if (!readyForNextState)
+            {
+                if(thirdPersonCamera.isLerping == false && thirdPersonCamera.currentTarget == transform)
+                {
+                    ReadyNextState();
+                }
+            }
+            else if(thirdPersonCamera.currentTarget == ragdollChest.transform && !thirdPersonCamera.isLerping)
+            {
+                thirdPersonCamera.StopAllCoroutines();
+                thirdPersonCamera.SwapTargets(transform);
+            }
+        }
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        float collisionForce = collision.impulse.magnitude / Time.fixedDeltaTime;
+
+        //Debug.Log("Name: " + collision.collider.gameObject.name + " | Force: " + collisionForce);
+
+        if (collisionForce >= impactRagdollForce)
+        {
+            if (!isRagdoll)
+            {
+                TurnOnRagdoll();
+            }
+            else
+            {
+                ragdollTimer = 0;
             }
         }
     }
@@ -130,7 +179,6 @@ public class RagdollController : MonoBehaviour
         }
 
         ragdollChest.velocity = currentVelocity * 8;
-        readyForNextState = true;
     }
 
     public void TurnOffRagdoll()
@@ -170,7 +218,102 @@ public class RagdollController : MonoBehaviour
         playerRigidbody.position = getUpPosition;
 
         ragdollChest.transform.parent = transform.GetChild(0);
-    
+
+        ResetBonePositions();
+
+        animator.enabled = true;
+
+        playerCollider.isTrigger = false;
+        playerRigidbody.isKinematic = false;
+
+        characterInput.allowMovement = true;
+        playerRigidbody.velocity = Vector3.zero;
+    }
+
+    public void ReadyNextState()
+    {
+        readyForNextState = true;
+    }
+
+    public void TeleportTo(Transform teleportPoint)
+    {
+        if(isRagdoll)
+        {
+            InstantTurnOffRagdoll();
+        }
+
+        playerRigidbody.isKinematic = true;
+        ragdollChest.isKinematic = true;
+
+        playerRigidbody.velocity = Vector3.zero;
+        ragdollChest.velocity = Vector3.zero;
+
+        playerCollider.enabled = false;
+
+        characterInput.cc.enabled = false;
+
+        transform.position = teleportPoint.position;
+        transform.rotation = teleportPoint.rotation;
+
+        ragdollChest.transform.localPosition = defaultRigidbodyPosition;
+        ragdollChest.transform.localRotation = defaultRigidbodyRotation;
+
+        Invoke("FinishMove", 0.2f);
+    }
+
+    private void ResetBonePositions()
+    {
+        for (int i = 0; i < ragdollRigidBodies.Count; i++)
+        {
+            ragdollRigidBodies[i].transform.localPosition = defaultRigidBodyPositions[i];
+            ragdollRigidBodies[i].transform.localRotation = defaultRigidBodyRotations[i];
+        }
+    }
+
+    private void FinishMove()
+    {
+        characterInput.cc.enabled = true;
+        playerCollider.enabled = true;
+        playerRigidbody.isKinematic = false;
+    }
+
+    public void InstantTurnOffRagdoll()
+    {
+        isRagdoll = false;
+        getUpPosition = ragdollChest.transform.position;
+
+        RaycastHit raycastHit;
+        // raycast for check the ground distance
+        if (Physics.Raycast(ragdollChest.transform.position, Vector3.down, out raycastHit, 1, characterInput.cc.groundLayer))
+        {
+            getUpPosition = raycastHit.point;
+        }
+
+        ragdollChest.isKinematic = true;
+        ragdollChest.transform.localRotation = defaultRigidbodyRotation;
+        ragdollChest.transform.localPosition = defaultRigidbodyPosition;
+
+        playerRigidbody.velocity = Vector3.zero;
+
+        foreach (Collider ragdollCollider in ragdollColliders)
+        {
+            ragdollCollider.isTrigger = true;
+            ragdollCollider.attachedRigidbody.isKinematic = true;
+        }
+
+        thirdPersonCamera.StopAllCoroutines();
+        thirdPersonCamera.SwapTargets(transform);
+
+        ragdollChest.position = defaultRigidbodyPosition;
+        ragdollChest.transform.parent = null;
+
+        transform.position = getUpPosition;
+        playerRigidbody.position = getUpPosition;
+
+        ragdollChest.transform.parent = transform.GetChild(0);
+
+        ResetBonePositions();
+
         animator.enabled = true;
 
         playerCollider.isTrigger = false;

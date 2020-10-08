@@ -45,6 +45,7 @@ namespace Invector.vCharacterController
         public float extraGravity = -10f;
         [HideInInspector]
         public float limitFallVelocity = -15f;
+        public GameObject groundedObject;
 
         [Header("- Friction")]
         public float stationaryStaticFriction = 1f;
@@ -110,6 +111,12 @@ namespace Invector.vCharacterController
         internal Vector3 colliderCenter;                    // storage the center of the capsule collider info                
         internal Vector3 inputSmooth;                       // generate smooth input based on the inputSmooth value       
         internal Vector3 moveDirection;                     // used to know the direction you're moving
+
+        [HideInInspector]
+        public bool isSlapping = false;
+
+        [HideInInspector]
+        public bool finishedSlap = true;
 
         private bool didHitRoof = false;
 
@@ -186,7 +193,23 @@ namespace Invector.vCharacterController
 
             bool useVerticalVelocity = true;
             if (useVerticalVelocity) targetVelocity.y = _rigidbody.velocity.y;
-            _rigidbody.velocity = targetVelocity;
+
+
+            if (!isSlapping && finishedSlap)
+            {
+                if (transform.parent == null || (transform.parent != null && transform.parent.gameObject.layer != 12) || (transform.parent != null && transform.parent.gameObject.layer == 12 && input.magnitude > 0))
+                {
+                    _rigidbody.velocity = targetVelocity;
+                }
+                else
+                {
+                    _rigidbody.velocity = Vector3.zero;
+                }
+            }
+            else
+            {
+                _rigidbody.velocity = Vector3.zero;
+            }
         }
 
         public virtual void CheckSlopeLimit()
@@ -380,8 +403,16 @@ namespace Invector.vCharacterController
                     {
                         Physics.Linecast(groundHit.point + (Vector3.up * 0.1f), groundHit.point + Vector3.down * 0.15f, out groundHit, groundLayer);
                         float newDist = transform.position.y - groundHit.point.y;
-                        if (dist > newDist) dist = newDist;
+                        if (dist > newDist)
+                        {
+                            dist = newDist;
+                        }
                     }
+                }
+
+                if (groundHit.collider != null)
+                {
+                    groundedObject = groundHit.collider.gameObject;
                 }
                 groundDistance = (float)System.Math.Round(dist, 2);
             }
