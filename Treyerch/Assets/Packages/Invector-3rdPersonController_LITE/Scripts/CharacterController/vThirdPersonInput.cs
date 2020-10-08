@@ -25,10 +25,8 @@ namespace Invector.vCharacterController
         [HideInInspector]
         public bool allowMovement = true;
 
-        [HideInInspector]
-        public bool isSlapping = false;
-        [HideInInspector]
-        public bool finishedSlap = true;
+
+
         #endregion
 
         protected virtual void Start()
@@ -90,7 +88,7 @@ namespace Invector.vCharacterController
                 {
                     SlapInput();
 
-                    if (!isSlapping && finishedSlap)
+                    if (!cc.isSlapping && cc.finishedSlap)
                     {
                         MoveInput();
                         SprintInput();
@@ -115,12 +113,12 @@ namespace Invector.vCharacterController
             {
                 if (Input.GetMouseButton(slapMouse))
                 {
-                    finishedSlap = false;
-                    isSlapping = true;
+                    cc.finishedSlap = false;
+                    cc.isSlapping = true;
                 }
                 else
                 {
-                    isSlapping = false;
+                    cc.isSlapping = false;
                 }
             }
         }

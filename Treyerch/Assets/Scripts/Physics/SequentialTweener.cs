@@ -78,8 +78,13 @@ public class SequentialTweener : MonoBehaviour
     #endregion
 
     #region Stored Data
+    [HideInInspector]
+    public int sequenceIndex = 0;
+
+    [HideInInspector]
+    public bool isActive;
+
     private int timesLeftToPlay = 0;
-    private int sequenceIndex = 0;
     private Sequence moveTweener;
     private Sequence rotateTweener;
     private Sequence scaleTweener;
@@ -287,8 +292,9 @@ public class SequentialTweener : MonoBehaviour
     /// <param name="sequenceToPlayFrom"></param>
     public void PlaySequenceFromIndex(int sequenceToPlayFrom = -1)
     {
+        isActive = true;
         //If not specified, player from the current index
-        if(sequenceToPlayFrom == -1)
+        if (sequenceToPlayFrom == -1)
         {
             sequenceToPlayFrom = sequenceIndex;
         }
