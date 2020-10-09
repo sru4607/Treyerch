@@ -107,9 +107,9 @@ public class RagdollController : MonoBehaviour
             realVelocity = Mathf.Abs(Vector3.Distance(ragdollChest.position, positionLastFrame)) / Time.deltaTime;
             positionLastFrame = ragdollChest.position;
 
-            if(realVelocity < 0.1f)
+            if(realVelocity < 0.25f)
             {
-                Debug.Log(realVelocity);
+                //Debug.Log(realVelocity);
                 ragdollTimer += Time.deltaTime;
 
                 if(ragdollTimer >= ragdollIdleMax)
@@ -134,6 +134,11 @@ public class RagdollController : MonoBehaviour
                 thirdPersonCamera.StopAllCoroutines();
                 thirdPersonCamera.SwapTargets(transform);
             }
+        }
+
+        if(transform.parent == null && transform.localScale != Vector3.one)
+        {
+            transform.localScale = Vector3.one;
         }
     }
 

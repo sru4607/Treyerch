@@ -9,9 +9,12 @@ EditorBuildSettings:
     path: Assets/Scenes/MainMenu.unity
     guid: 07ce914d69a26324a8ff6360f43e51fb
   - enabled: 1
-    path: Assets/Scenes/Proto_1_Scene.unity
-    guid: 5ed3f98ef12c9a3409d001570e605abb
+    path: Assets/Scenes/Basketball.unity
+    guid: 9addbedc81f7ee4458b2d3a24f57175c
   - enabled: 1
-    path: Assets/Scenes/Map01_City.unity
-    guid: 256851f123b4fb348a943ea43fa4f4ce
+    path: Assets/Scenes/Cars.unity
+    guid: f59a37c9645ec4845ad7b50d6ae7ad6e
+  - enabled: 1
+    path: Assets/Scenes/Platform.unity
+    guid: 76a874ef0ee58164dad58275a3abae78
   m_configObjects: {}
