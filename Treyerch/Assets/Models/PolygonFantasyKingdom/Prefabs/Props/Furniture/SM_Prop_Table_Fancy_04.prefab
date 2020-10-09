@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 33650534435044234}
   - component: {fileID: 23870195771725908}
   - component: {fileID: 6705562794241776977}
-  - component: {fileID: 130055472850077576}
   - component: {fileID: 157002638520450671}
   - component: {fileID: 5307475680598488966}
   - component: {fileID: 6454419841648601497}
@@ -24,7 +23,7 @@ GameObject:
   - component: {fileID: 5344539016870330528}
   - component: {fileID: 2531035358159368035}
   - component: {fileID: 5447545278648203003}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: SM_Prop_Table_Fancy_04
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -101,22 +100,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 0.9793428, y: 0.22488755, z: 1.0061677}
-  m_Center: {x: -0.038553655, y: 0.107646614, z: -0.008238077}
---- !u!136 &130055472850077576
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1733567674968748}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  m_Radius: 0.26623702
-  m_Height: 0.8031266
-  m_Direction: 1
-  m_Center: {x: -0.0033557415, y: 0.45940924, z: 0.003769666}
+  m_Size: {x: 0.9793428, y: 0.8535418, z: 1.0061677}
+  m_Center: {x: -0.038553655, y: 0.42197374, z: -0.008238077}
 --- !u!65 &157002638520450671
 BoxCollider:
   m_ObjectHideFlags: 0

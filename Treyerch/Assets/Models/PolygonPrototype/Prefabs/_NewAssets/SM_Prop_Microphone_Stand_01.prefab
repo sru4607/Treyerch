@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 1072550049353939006}
   - component: {fileID: 4343391915391621289}
   - component: {fileID: 3285444856246693481}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: SM_Prop_Microphone_Stand_01
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 5488003168258638365}
   - component: {fileID: 7244884861210038127}
   - component: {fileID: 1910921203165456735}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: SM_Prop_Alcohol_Bottle_Empty_01
   m_TagString: Untagged
   m_Icon: {fileID: 0}

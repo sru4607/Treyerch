@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 23584421589997484}
   - component: {fileID: 8835236774856073009}
   - component: {fileID: 4512973239917367184}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: SM_Prop_Stereo_Speaker_Large_01
   m_TagString: Untagged
   m_Icon: {fileID: 0}
