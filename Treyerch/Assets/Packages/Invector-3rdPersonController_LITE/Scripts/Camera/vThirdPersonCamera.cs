@@ -28,7 +28,8 @@ public class vThirdPersonCamera : MonoBehaviour
 
     private GameObject targetAtPos;
     private GameObject tempPos;
-    private bool isLerping = false;
+    [HideInInspector]
+    public bool isLerping = false;
     private Transform newTarget;
 
     #endregion
@@ -222,9 +223,16 @@ public class vThirdPersonCamera : MonoBehaviour
                 currentTime = lerpDelay;
                 currentTarget = newTarget;
                 target = currentTarget;
-                isLerping = false;
+                isLerping = false;               
             }
         }
+    }
+
+    public void SwapTargets(Transform newTarget)
+    {
+        currentTarget = newTarget;
+        target = currentTarget;
+        isLerping = false;
     }
 
     /// <summary>

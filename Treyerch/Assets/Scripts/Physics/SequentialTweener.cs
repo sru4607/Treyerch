@@ -1,15 +1,61 @@
-﻿using System.Collections;
+﻿#region Packages
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 using Sirenix.OdinInspector;
+using UnityEditor;
+#endregion
 
 public class SequentialTweener : MonoBehaviour
 {
+    #region Variables & Inspector Options
+    #region Tracker
+    [BoxGroup("Tracker", CenterLabel = true)]
+    [ShowIf("@tracker == null"), PropertyOrder(-1)]
+    [Button("Add Tracker", ButtonSizes.Medium)]
+    public void AddTracker()
+    {
+        if (tracker == null)
+        {
+#if UNITY_EDITOR
+            ActiveEditorTracker.sharedTracker.isLocked = true;
+#endif
+            tracker = new GameObject();
+            tracker.transform.parent = transform.parent;
+            tracker.name = gameObject.name + " - Tracker ["+ trackerOverrideIndex+"]";
+            OnTrackerIndexChange();
+        }
+    }
+
+    [BoxGroup("Tracker", CenterLabel = true)]
+    [ShowIf("@tracker != null"), PropertyOrder(-1)]
+    [Button("Remove Tracker", ButtonSizes.Medium)]
+    public void RemoveTracker()
+    {
+        if (tracker != null)
+        {
+            DestroyImmediate(tracker);
+            tracker = null;
+
+#if UNITY_EDITOR
+            ActiveEditorTracker.sharedTracker.isLocked = false;
+#endif
+        }
+    }
+
+    [BoxGroup("Tracker", CenterLabel = true)]
+    [ShowIf("@tracker != null"), PropertyRange(0, "trackerMax"), PropertyOrder(0)]
+    [OnValueChanged("OnTrackerIndexChange")]
+    public int trackerOverrideIndex;
+    #endregion
+
+    #region Sequences Tab
     [TabGroup("Sequences")]
     [ListDrawerSettings(ListElementLabelName = "displayTitle")]
     public List<SequenceTween> sequences = new List<SequenceTween>();
+    #endregion
 
+    #region Settings Tab
     [TabGroup("Settings")]
     public bool enableOnStart;
     [TabGroup("Settings")]
@@ -21,22 +67,43 @@ public class SequentialTweener : MonoBehaviour
     [TabGroup("Settings")]
     [HideIf("isInfinite")]
     public int sequenceLimit = 0;
+    #endregion
 
+    #region Visualize Tab
     [TabGroup("Visualize")]
     public MeshFilter meshFilter;
     [TabGroup("Visualize")]
     [ShowIf("meshFilter")]
     public bool visualizeDestinations;
+    #endregion
+
+    #region Stored Data
+    [HideInInspector]
+    public int sequenceIndex = 0;
+
+    [HideInInspector]
+    public bool isActive;
 
     private int timesLeftToPlay = 0;
-    private int sequenceIndex = 0;
     private Sequence moveTweener;
     private Sequence rotateTweener;
     private Sequence scaleTweener;
+    private GameObject tracker;
+    private int trackerMax = 0;
+    private int toTrack = 0;
+    private bool readyToTrack = false;
+    #endregion
+    #endregion
 
-    // Start is called before the first frame update
-    void Start()
+    #region Methods
+    #region Unity Events
+    /// <summary>
+    /// Start is called before the first frame update
+    /// </summary>
+    private void Start()
     {
+        RemoveTracker();
+
         timesLeftToPlay = sequenceLimit;
 
         if (sequences != null && sequences.Count > 0)
@@ -48,6 +115,9 @@ public class SequentialTweener : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Handles the positioning of the trackers and destination gizmos
+    /// </summary>
     private void OnDrawGizmos()
     {
         if (meshFilter && visualizeDestinations)
@@ -92,15 +162,57 @@ public class SequentialTweener : MonoBehaviour
                 }
             }
         }
+
+        if(sequences != null)
+        {
+            if (sequences.Count > 0)
+            {
+                if(trackerMax < sequences.Count - 1 || trackerMax > sequences.Count - 1) //new one was added/removed
+                {
+                    trackerMax = sequences.Count - 1;
+                    trackerOverrideIndex = sequences.Count - 1;
+                    OnTrackerIndexChange();
+                }
+
+                if (tracker != null)
+                {
+                    tracker.name = gameObject.name + " - Tracker [" + trackerOverrideIndex + "]";
+
+                    if (sequences[toTrack] != null && readyToTrack && (toTrack == trackerOverrideIndex))
+                    {
+                        if (sequences[toTrack].doMove)
+                        {
+                            sequences[toTrack].moveTo = tracker.transform.position;
+                        }
+
+                        if (sequences[toTrack].doRotate)
+                        {
+                            sequences[toTrack].rotateTo = tracker.transform.rotation;
+                        }
+
+                        if (sequences[toTrack].doScale)
+                        {
+                            sequences[toTrack].scaleTo = tracker.transform.localScale;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                trackerMax = 0;
+            }
+        }
     }
 
+    /// <summary>
+    /// Sequence Odin Titles
+    /// </summary>
     private void OnValidate()
     {
         if(sequences != null && sequences.Count > 0)
         {
             for (int i = 0; i < sequences.Count; i++)
             {
-                sequences[i].tweenTitle = "Tween";
                 sequences[i].displayTitle = sequences[i].tweenTitle + " " + i;
                 sequences[i].displayTitle += " [Length: " + sequences[i].tweenLength + "]";
 
@@ -128,6 +240,8 @@ public class SequentialTweener : MonoBehaviour
 
                 if (sequences[i].hasInit == false)
                 {
+                    sequences[i].tweenTitle = "Tween";
+
                     if (sequences[i].moveTo == Vector3.zero)
                     {
                         if (i == 0)
@@ -169,11 +283,18 @@ public class SequentialTweener : MonoBehaviour
             }
         }
     }
+    #endregion
 
+    #region Main Methods
+    /// <summary>
+    /// Plays a Sequence from the list of sequences from either a specific index or the next index
+    /// </summary>
+    /// <param name="sequenceToPlayFrom"></param>
     public void PlaySequenceFromIndex(int sequenceToPlayFrom = -1)
     {
+        isActive = true;
         //If not specified, player from the current index
-        if(sequenceToPlayFrom == -1)
+        if (sequenceToPlayFrom == -1)
         {
             sequenceToPlayFrom = sequenceIndex;
         }
@@ -217,6 +338,9 @@ public class SequentialTweener : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Pauses the current sequence
+    /// </summary>
     public void PauseSequence()
     {
         moveTweener.Pause();
@@ -224,6 +348,9 @@ public class SequentialTweener : MonoBehaviour
         scaleTweener.Pause();
     }
 
+    /// <summary>
+    /// Resumes the current sequence
+    /// </summary>
     public void ResumeSequence()
     {
         moveTweener.Play();
@@ -231,13 +358,21 @@ public class SequentialTweener : MonoBehaviour
         scaleTweener.Play();
     }
 
-    public void KillSequence()
+    /// <summary>
+    /// Ends the current sequence
+    /// </summary>
+    public void KillSequence(bool doComplete)
     {
-        moveTweener.Kill();
-        rotateTweener.Kill();
-        scaleTweener.Kill();
+        moveTweener.Kill(doComplete);
+        rotateTweener.Kill(doComplete);
+        scaleTweener.Kill(doComplete);
     }
+    #endregion
 
+    #region Helper Methods
+    /// <summary>
+    /// Plays the next indexed sequence within the list and if we reached the end, try to loop
+    /// </summary>
     private void PlayNextSequence()
     {
         sequenceIndex++;
@@ -263,6 +398,9 @@ public class SequentialTweener : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Attempt to loop the sequences
+    /// </summary>
     private void DoLoop()
     {
         if (doLoop)
@@ -272,6 +410,9 @@ public class SequentialTweener : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Attempt to autoadvance to the next index in the sequence
+    /// </summary>
     private void AutoPlayCurrentIndex()
     {
         if (doAutoAdvance)
@@ -280,6 +421,10 @@ public class SequentialTweener : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Immediately snaps to a given index in a sequence
+    /// </summary>
+    /// <param name="previous"></param>
     private void SnapToPrevious(int previous)
     {
         if(sequences != null && sequences.Count > 1)
@@ -308,9 +453,34 @@ public class SequentialTweener : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Handles the current index the tracker is following
+    /// </summary>
+    private void OnTrackerIndexChange()
+    {
+        readyToTrack = false;
+        if (tracker != null && sequences != null && sequences.Count > 0)
+        {
+            if (sequences[trackerOverrideIndex] != null)
+            {
+                tracker.transform.position = sequences[trackerOverrideIndex].moveTo;
+                tracker.transform.rotation = sequences[trackerOverrideIndex].rotateTo;
+                tracker.transform.localScale = sequences[trackerOverrideIndex].scaleTo;
+                toTrack = trackerOverrideIndex;
+            }
+        }
+        readyToTrack = true;
+    }
+    #endregion
+    #endregion
+
+    #region Classes
     [System.Serializable]
     public class SequenceTween
     {
+        #region Variables & Inspector Options
+        #region Top Options
+        #region Tween Settings
         [BoxGroup("Tween", ShowLabel = false)]
         [HorizontalGroup("Tween/Split")]
         [BoxGroup("Tween/Split/TweenSettings", ShowLabel = false)]
@@ -326,7 +496,9 @@ public class SequentialTweener : MonoBehaviour
         [HorizontalGroup("Tween/Split")]
         [BoxGroup("Tween/Split/TweenSettings", ShowLabel = false)]
         public bool showDisplaySettings = false;
+        #endregion
 
+        #region Transform Options
         [BoxGroup("Tween", ShowLabel = false)]
         [HorizontalGroup("Tween/Split")]
         [ShowIfGroup("Tween/Split/isTransformMode")]
@@ -343,7 +515,10 @@ public class SequentialTweener : MonoBehaviour
         [ShowIfGroup("Tween/Split/isTransformMode")]
         [BoxGroup("Tween/Split/isTransformMode/TransformOption", ShowLabel = false)]
         public bool doScale;
+        #endregion
+        #endregion
 
+        #region Middle Options
         [BoxGroup("Tween", ShowLabel = false)]
         [ShowIfGroup("Tween/showDisplaySettings")]
         [BoxGroup("Tween/showDisplaySettings/DisplaySettings", ShowLabel = false)]
@@ -356,7 +531,9 @@ public class SequentialTweener : MonoBehaviour
         [BoxGroup("Tween/showDisplaySettings/DisplaySettings", ShowLabel = false)]
         [ShowIf("showDisplaySettings")]
         public Color visualizeColor = Color.red;
+        #endregion
 
+        #region Bottom Options
         [BoxGroup("Tween", ShowLabel = false)]
         [BoxGroup("Tween/TweenOptions", ShowLabel = false)]
         [Header("Tween Options")]
@@ -374,7 +551,9 @@ public class SequentialTweener : MonoBehaviour
         [BoxGroup("Tween/TweenOptions", ShowLabel = false)]
         [ShowIf("@doRotate == true && tweenType == TweenType.Transform")]
         public Quaternion rotateTo = Quaternion.Euler(0,0,0);
+        #endregion
 
+        #region Stored Data
         public enum TweenType { Transform, Delay}
 
         [HideInInspector]
@@ -385,5 +564,30 @@ public class SequentialTweener : MonoBehaviour
 
         [HideInInspector]
         public bool isTransformMode = true;
+        #endregion
+        #endregion
     }
+    #endregion
 }
+
+/* HELP SECTION
+
+Q: Nothing is showing up at all and things aren't working! Is this script totally broken???
+A: Make sure you have Gizmos enables in your Unity project. If they are disabled, it wont be able to call OnDrawGizmos.
+
+Q: The object isn't moving (and I selected that is should start on play)!
+A: This is more than likely because you did not specify a Transform Option for the first sequence. If you want it to return to where it is now, exactly how it is now, check all 3 options.
+
+Q: The object rotated once and now will not rotate back!
+A: You most likely did not set the original transform rotation back in your first position
+
+Q: When the object rotates AND scales, it becomes distorted!
+A: Yeah that's a limit of Quaternions. Just try and void SKEW Rotations. Linear rotations should work fine.
+
+Q: When I move the values of one object in the sequence, the previous values move too!
+A: This is probably because you have left the default values and haven't chosen to make that sequence a Delay sequence. You can always check all 3 boxes and just not edit the values. It will learp in-place.
+
+Q: How can I tell if a sequence is in the default state?
+A: If it is titled "New Tween", it's default. Once you have done SOMETHING, it will update to be just "Tween". If it is in this default state, it won't work the way you want I promise.
+
+*/

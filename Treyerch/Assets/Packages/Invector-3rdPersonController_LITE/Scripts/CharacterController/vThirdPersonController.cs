@@ -6,6 +6,7 @@ namespace Invector.vCharacterController
     {
         public Rigidbody characterRigidbody;
         public CapsuleCollider characterCapsuleCollider;
+        public GameObject playerCamera;
 
         public virtual void ControlAnimatorRootMotion()
         {
@@ -19,6 +20,31 @@ namespace Invector.vCharacterController
 
             if (useRootMotion)
                 MoveCharacter(moveDirection);
+        }
+
+        public void OnCollisionStay(Collision collision)
+        {
+            if(collision.collider.gameObject.layer == 12) //Moving Platform
+            {
+                if(isGrounded && groundedObject == collision.collider.gameObject && transform.parent != groundedObject.transform)
+                {
+                    transform.parent = groundedObject.transform;
+                    playerCamera.transform.parent = groundedObject.transform;
+                }
+            }
+        }
+
+        public void OnCollisionExit(Collision collision)
+        {
+            if (collision.collider.gameObject.layer == 12 && !_rigidbody.isKinematic) //Moving Platform
+            {
+                if (transform.parent == groundedObject.transform)
+                {
+                    transform.parent = null;
+                    playerCamera.transform.parent = null;
+                    //Debug.Log("Break");
+                }
+            }
         }
 
         public virtual void ControlLocomotionType()
