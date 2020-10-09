@@ -28,7 +28,7 @@ namespace Invector.vCharacterController
             {
                 if(isGrounded && groundedObject == collision.collider.gameObject && transform.parent != groundedObject.transform)
                 {
-                    transform.parent = groundedObject.transform;
+                    transform.SetParent(groundedObject.transform, true);
                     playerCamera.transform.parent = groundedObject.transform;
                 }
             }

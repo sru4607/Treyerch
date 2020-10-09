@@ -5,6 +5,7 @@ using UnityEngine.SceneManagement;
 
 public class SceneController : MonoBehaviour
 {
+    public float switchDelay = 1f;
     // Start is called before the first frame update
     void Start()
     {
@@ -43,6 +44,11 @@ public class SceneController : MonoBehaviour
     }
 
     public void LoadMenu(){
+        Invoke("DoLoad", switchDelay);
+    }
+
+    private void DoLoad()
+    {
         SceneManager.LoadScene(0);
     }
 }
