@@ -17,4 +17,10 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Platform.unity
     guid: 76a874ef0ee58164dad58275a3abae78
+  - enabled: 1
+    path: Assets/Scenes/Plinko.unity
+    guid: 293269608e4112a46a8e96a595c91564
+  - enabled: 1
+    path: Assets/Scenes/Bar_Scene.unity
+    guid: 2b291bd7c834a1e4e8377b93dccbe2fa
   m_configObjects: {}

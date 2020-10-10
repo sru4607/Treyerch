@@ -97,7 +97,6 @@ public class RagdollController : MonoBehaviour
         {
             if (readyForNextState && !isRagdoll && thirdPersonCamera.target == transform)
             {
-                readyForNextState = false;
                 TurnOnRagdoll();
             }
         }
@@ -163,27 +162,31 @@ public class RagdollController : MonoBehaviour
 
     public void TurnOnRagdoll()
     {
-        isRagdoll = true;
-        characterInput.cc.Sprint(false);
-        Vector3 currentVelocity = playerRigidbody.velocity;
-        defaultRigidbodyPosition = ragdollChest.transform.localPosition;
-        defaultRigidbodyRotation = ragdollChest.transform.localRotation;
-
-        thirdPersonCamera.StartCoroutine(thirdPersonCamera.CameraChangeDelay(0, 2f, ragdollChest.transform));
-
-        playerRigidbody.isKinematic = true;
-        playerCollider.isTrigger = true;
-
-        animator.enabled = false;
-        characterInput.allowMovement = false;
-
-        foreach (Collider ragdollCollider in ragdollColliders)
+        if (readyForNextState)
         {
-            ragdollCollider.isTrigger = false;
-            ragdollCollider.attachedRigidbody.isKinematic = false;
-        }
+            readyForNextState = false;
+            isRagdoll = true;
+            characterInput.cc.Sprint(false);
+            Vector3 currentVelocity = playerRigidbody.velocity;
+            defaultRigidbodyPosition = ragdollChest.transform.localPosition;
+            defaultRigidbodyRotation = ragdollChest.transform.localRotation;
 
-        ragdollChest.velocity = currentVelocity * 8;
+            thirdPersonCamera.StartCoroutine(thirdPersonCamera.CameraChangeDelay(0, 2f, ragdollChest.transform));
+
+            playerRigidbody.isKinematic = true;
+            playerCollider.isTrigger = true;
+
+            animator.enabled = false;
+            characterInput.allowMovement = false;
+
+            foreach (Collider ragdollCollider in ragdollColliders)
+            {
+                ragdollCollider.isTrigger = false;
+                ragdollCollider.attachedRigidbody.isKinematic = false;
+            }
+
+            ragdollChest.velocity = currentVelocity * 8;
+        }
     }
 
     public void TurnOffRagdoll()
