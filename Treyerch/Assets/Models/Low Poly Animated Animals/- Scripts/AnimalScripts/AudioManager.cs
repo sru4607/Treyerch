@@ -7,8 +7,8 @@ namespace LowPolyAnimalPack
     public class AudioManager : MonoBehaviour
     {
         private static AudioManager instance;
-        [SerializeField]
-        private bool muteSound;
+
+        public bool muteSound;
 
         [SerializeField]
         private int objectPoolLength = 20;
