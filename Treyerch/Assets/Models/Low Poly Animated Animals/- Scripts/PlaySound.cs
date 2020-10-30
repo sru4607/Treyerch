@@ -6,6 +6,7 @@ namespace LowPolyAnimalPack
     public class PlaySound : MonoBehaviour
     {
         public Animator animator;
+        public PlayerController playerController;
 
         [BoxGroup("animalSound", false)]
         public AudioObject animalSound;
@@ -36,10 +37,10 @@ namespace LowPolyAnimalPack
 
         void Walking()
         {
-            if (walking.audioClip)
+            if (walking.audioClip && (!playerController || (playerController && walking.mustBeGrounded && playerController.isGrounded)))
             {
-                if(animator.GetFloat(walking.animatorVariable) >= 1)
-                AudioManager.PlaySound(walking.audioClip, transform.position, walking.volume, animator.GetFloat(walking.animatorVariable)+ walking.floatOffset);
+                if(animator.GetFloat(walking.animatorVariable) >= 1.2f)
+                AudioManager.PlaySound(walking.audioClip, transform.position, walking.volume, animator.GetFloat(walking.animatorVariable)+walking.floatOffset);
             }
         }
 
@@ -53,9 +54,9 @@ namespace LowPolyAnimalPack
 
         void Running()
         {
-            if (running.audioClip)
+            if (running.audioClip && (!playerController || (playerController && walking.mustBeGrounded && playerController.isGrounded)))
             {
-                if (animator.GetFloat(running.animatorVariable) >= 1)
+                if (animator.GetFloat(running.animatorVariable) >= 1.2f)
                     AudioManager.PlaySound(running.audioClip, transform.position, running.volume, animator.GetFloat(running.animatorVariable)+ running.floatOffset);
             }
         }
@@ -89,6 +90,7 @@ namespace LowPolyAnimalPack
     public class AudioObject
     {
         public AudioClip audioClip;
+        public bool mustBeGrounded = true;
         public float volume;
         public PitchMode pitchMode = PitchMode.Random;
 

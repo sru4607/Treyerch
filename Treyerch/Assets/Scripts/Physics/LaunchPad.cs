@@ -61,7 +61,7 @@ public class LaunchPad : MonoBehaviour
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.blue;
-        Gizmos.DrawLine(transform.position, transform.position + ((transform.forward + launchAngle).normalized * launchPower)/15);
+        Gizmos.DrawLine(transform.position, transform.position + ((transform.up).normalized * launchPower)/15);
     }
 
     private void OnTriggerEnter(Collider col)
@@ -74,6 +74,15 @@ public class LaunchPad : MonoBehaviour
                 {
                     RagdollController playerRagDoll = col.transform.root.GetComponentInChildren<RagdollController>();
                     LaunchRagdoll(playerRagDoll);
+                }
+            }
+
+            if (col.gameObject.layer == 9) //PlayerMB
+            {
+                if (!hasLaunched)
+                {
+                    PlayerController playerContoller = col.GetComponent<PlayerController>();
+                    LaunchBall(playerContoller);
                 }
             }
         }
@@ -90,6 +99,19 @@ public class LaunchPad : MonoBehaviour
             }
 
             playerRagDoll.ragdollChest.velocity = (transform.forward + launchAngle).normalized * launchPower;
+
+            Invoke("ResetLauncher", launcherResetTimer);
+        }
+    }
+
+    private void LaunchBall(PlayerController playerContoller)
+    {
+        if (playerContoller != null)
+        {
+            hasLaunched = true;
+
+            playerContoller.rigidBody.velocity = Vector3.zero;
+            playerContoller.rigidBody.velocity = (transform.up).normalized * launchPower;
 
             Invoke("ResetLauncher", launcherResetTimer);
         }
