@@ -9276,6 +9276,16 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 283797892521969704, guid: bd92b1faad5f9e442bea63a357083c08,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 283797892521969704, guid: bd92b1faad5f9e442bea63a357083c08,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 4
+      objectReference: {fileID: 0}
     - target: {fileID: 467521394174182932, guid: bd92b1faad5f9e442bea63a357083c08,
         type: 3}
       propertyPath: m_ConnectedAnchor.x
@@ -9326,6 +9336,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_ConnectedAnchor.z
       value: -0.000000040978193
+      objectReference: {fileID: 0}
+    - target: {fileID: 1810620570508588062, guid: bd92b1faad5f9e442bea63a357083c08,
+        type: 3}
+      propertyPath: m_Text
+      value: Score a Hoop!
       objectReference: {fileID: 0}
     - target: {fileID: 2641782706960478284, guid: bd92b1faad5f9e442bea63a357083c08,
         type: 3}
