@@ -188,27 +188,56 @@ namespace Invector.vCharacterController
             if (_direction.magnitude > 1f)
                 _direction.Normalize();
 
-            Vector3 targetPosition = (useRootMotion ? animator.rootPosition : _rigidbody.position) + _direction * (stopMove ? 0 : moveSpeed) * Time.deltaTime;
-            Vector3 targetVelocity = (targetPosition - transform.position) / Time.deltaTime;
+            if(_rigidbody.gameObject.transform.parent == null){
+                Vector3 targetPosition = (useRootMotion ? animator.rootPosition : _rigidbody.position) + _direction * (stopMove ? 0 : moveSpeed) * Time.deltaTime;
+                Vector3 targetVelocity = (targetPosition - transform.position) / Time.deltaTime;
 
-            bool useVerticalVelocity = true;
-            if (useVerticalVelocity) targetVelocity.y = _rigidbody.velocity.y;
+                bool useVerticalVelocity = true;
+                if (useVerticalVelocity) targetVelocity.y = _rigidbody.velocity.y;
 
 
-            if (!isSlapping && finishedSlap)
-            {
-                if (transform.parent == null || (transform.parent != null && transform.parent.gameObject.layer != 12) || (transform.parent != null && transform.parent.gameObject.layer == 12 && input.magnitude > 0))
+                if (!isSlapping && finishedSlap)
                 {
-                    _rigidbody.velocity = targetVelocity;
+                    if (transform.parent == null || (transform.parent != null && transform.parent.gameObject.layer != 12) || (transform.parent != null && transform.parent.gameObject.layer == 12 && input.magnitude > 0))
+                    {
+                        _rigidbody.velocity = targetVelocity;
+                    }
+                    else
+                    {
+                        _rigidbody.velocity = Vector3.zero;
+                    }
                 }
                 else
                 {
                     _rigidbody.velocity = Vector3.zero;
                 }
             }
-            else
-            {
-                _rigidbody.velocity = Vector3.zero;
+            else{
+                Vector3 targetPosition = _rigidbody.gameObject.transform.position + _direction * (stopMove ? 0 : moveSpeed) * Time.deltaTime;
+                Vector3 targetVelocity = (targetPosition - transform.position) / Time.deltaTime;
+
+                bool useVerticalVelocity = true;
+                if (useVerticalVelocity) targetVelocity.y = _rigidbody.velocity.y;
+
+
+                if (!isSlapping && finishedSlap)
+                {
+                    if (transform.parent == null || (transform.parent != null && transform.parent.gameObject.layer != 12) || (transform.parent != null && transform.parent.gameObject.layer == 12 && input.magnitude > 0))
+                    {
+                        _rigidbody.velocity = targetVelocity;
+                    }
+                    else
+                    {
+                        _rigidbody.velocity = Vector3.zero;
+                    }
+                }
+                else
+                {
+                    _rigidbody.velocity = Vector3.zero;
+                }
+                if(_rigidbody.gameObject.transform.parent.GetComponent<Rigidbody>()){
+                     _rigidbody.velocity = _rigidbody.velocity + _rigidbody.gameObject.transform.parent.GetComponent<Rigidbody>().velocity;
+                }
             }
         }
 
