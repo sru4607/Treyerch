@@ -39,6 +39,7 @@ public class AnimalTrack : MonoBehaviour
                 hasJumped = false;
                 animator.SetBool("isJumping", false);
                 animator.SetBool("isRunning", false);
+                animator.SetBool("isIdling", true);
             }
 
             Vector3 walkingVelocity = new Vector3(playerRigidbody.velocity.x, 0, playerRigidbody.velocity.z);

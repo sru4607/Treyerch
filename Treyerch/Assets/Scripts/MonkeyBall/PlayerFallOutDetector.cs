@@ -4,18 +4,38 @@ using DG.Tweening;
 
 public class PlayerFallOutDetector : MonoBehaviour 
 {
-	public LevelTilter levelTilter;
+	public LevelManager levelTilter;
+	public Color falloutColor = Color.red;
+	public bool drawFallOut;
+
 	private PlayerController player;
+
+	private void OnDrawGizmos()
+	{
+		if (drawFallOut)
+		{
+			Gizmos.color = falloutColor;
+			Gizmos.DrawCube(transform.position, transform.localScale);
+		}
+	}
 
     void OnTriggerEnter(Collider c) 
 	{
 		if (c.gameObject.layer == 9) //Player
 		{
-			if(player == null)
-            {
-				player = PlayerController.instance;
-			}
+			TriggerFallout();
+		}
+	}
 
+	public void TriggerFallout()
+    {
+		if (player == null)
+		{
+			player = PlayerController.instance;
+		}
+
+		if (player.isMovable)
+		{
 			player.isMovable = false;
 			player.gameObject.tag = "Untagged";
 			player.playerCamera.SetTarget(null);

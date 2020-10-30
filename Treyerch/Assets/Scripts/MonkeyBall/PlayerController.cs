@@ -8,16 +8,24 @@ public class PlayerController : MonoBehaviour
 	[Header("Settings")]
 	public float playerSpeed = 70;
 
-	[Header("Components")]
-	public AutoCam playerCamera;	
+	[Header("References")]
+	public LevelManager levelManager;
+	public AutoCam playerCamera;
+	public PresentCamera presentCamera;
 	public Rigidbody rigidBody;
 	public SphereCollider sphereCollider;
 
+	[Header("Bounce")]
+	public float minimumImpact = 1000f;
+	public GameObject bounceParticle;
+
 	[Header("Animation")]
 	public Animator animator;
+	public AnimalTrack animalTrack;
 	public float scaleUpTime = 0.3f;
 	public Ease scaleUpEase;
 	public float spinSpeed = 2;
+	public float initalCameraDelay = 1f;
 
 	[Header("Ground")]
 	[Tooltip("Layers that the character can walk on")]
@@ -51,7 +59,7 @@ public class PlayerController : MonoBehaviour
 
 	private void Start() 
 	{
-		//playerCamera.SnapRotate();
+		playerCamera.ResetCamera(true);
 		rigidBody.isKinematic = true;
 		transform.localScale = Vector3.zero;
 		playerCamera.InitChildCam();
@@ -74,7 +82,7 @@ public class PlayerController : MonoBehaviour
 	{
 		CheckIsGrounded();
 
-		if (isMovable)
+		if (isMovable && !presentCamera.gameObject.activeSelf)
 		{
 			Vector3 movement = Input.GetAxis("Vertical") * playerCamera.transform.forward + Input.GetAxis("Horizontal") * playerCamera.transform.right;
 			movement.y = 0f;
@@ -132,7 +140,12 @@ public class PlayerController : MonoBehaviour
     {
 		rigidBody.velocity = Vector3.zero;
 		rigidBody.isKinematic = true;
-		animator.enabled = false;
+		animalTrack.enabled = false;
+		animator.SetBool("isWalking", false);
+		animator.SetBool("isRunning", false);
+		animator.SetBool("isIdling", true);
+
+		//animator.enabled = false;
 		SpinLoop();
 	}
 
@@ -141,12 +154,41 @@ public class PlayerController : MonoBehaviour
 		startedLaunch = true;
 		Sequence move = DOTween.Sequence();
 		move.Append(transform.DOMoveY(200, 15));
+		Invoke("NextStage", 5f);
+	}
+
+	private void NextStage()
+    {
+		levelManager.LoadNextStage();
 	}
 
 	private void StartMovement()
     {
 		rigidBody.isKinematic = false;
+		rigidBody.velocity = Vector3.zero;
+		rigidBody.AddForce(transform.forward/3 * playerSpeed);
 		isMovable = true;
-		rigidBody.AddForce(transform.forward/25 * playerSpeed);
+
+		Invoke("ReadyCamera", initalCameraDelay);
+	}
+
+	private void OnCollisionEnter(Collision collision)
+	{
+		float collisionForce = collision.impulse.magnitude / Time.fixedDeltaTime;
+
+		//Debug.Log("Name: " + collision.collider.gameObject.name + " | Force: " + collisionForce);
+
+		if (collisionForce >= minimumImpact)
+		{
+			GameObject newParticle = Instantiate(bounceParticle, collision.contacts[0].point, Quaternion.identity);
+			newParticle.transform.parent = levelManager.transform.GetChild(1);
+			newParticle.transform.localRotation = Quaternion.LookRotation(collision.impulse, Vector3.up);
+		}
+	}
+
+	private void ReadyCamera()
+    {
+		playerCamera.readyToTrack = true;
+		presentCamera.StartSwitch();
 	}
 }
