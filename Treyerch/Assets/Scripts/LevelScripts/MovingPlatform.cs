@@ -4,30 +4,24 @@ using UnityEngine;
 
 public class MovingPlatform : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    public Vector3 start;
+    public Vector3 end;
+    public float period;
+    public float time;
+
+    void FixedUpdate()
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
-    void OnCollisionStay(Collision collision){
-        if(collision.gameObject.tag == "Player"){
-            Debug.Log("Enter");
-            collision.gameObject.transform.parent = gameObject.transform;
+        time+=Time.deltaTime;
+        float halfPeriod = period/2;
+        float currentPeriodTime = time%period;
+        Vector3 toMove;
+        if(currentPeriodTime < halfPeriod)
+        {
+            toMove = Vector3.Lerp(start,end,currentPeriodTime%halfPeriod/halfPeriod);
         }
-    }
-
-    void OnCollisionExit(Collision collision){
-        if(collision.gameObject.tag == "Player"){
-            Debug.Log("Left");
-            collision.gameObject.transform.parent = null;
+        else{
+            toMove = Vector3.Lerp(end,start,currentPeriodTime%halfPeriod/halfPeriod);
         }
-
+        gameObject.GetComponent<Rigidbody>().MovePosition(toMove);
     }
 }

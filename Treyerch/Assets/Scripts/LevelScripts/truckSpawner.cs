@@ -17,11 +17,10 @@ public class truckSpawner : MonoBehaviour
     public GameObject truckPrefab;
     //Start Vector
     public Vector3 start;
-    //End Vector
-    public Vector3 end;
-    //TweenLength
-    public float length;
+    //Delay before first spawn
     public float startDelay;
+    //Used in Frogger Level - sets teleport spawnpoint if it exists
+    public Transform spawnPoint;
     // Start is called before the first frame update
     void Start()
     {
@@ -34,14 +33,16 @@ public class truckSpawner : MonoBehaviour
         if(Time.time>ActionTime){
             Spawn();
             ActionTime=Time.time+Random.Range(minDelay,maxDelay);
-
         }
     }
 
     void Spawn(){
         GameObject truck = Instantiate(truckPrefab,start, Quaternion.identity);
-        truck.transform.DOMove(end, length).SetEase(Ease.Linear);
-        Destroy(truck, length+1);
-
+        if(spawnPoint){
+            TeleportTrigger tt = truck.GetComponent<TeleportTrigger>();
+            if(tt){
+                tt.spawnPoint = spawnPoint;
+            }
+        }
     }
 }
