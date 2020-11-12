@@ -1,9 +1,15 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GoalTrigger : MonoBehaviour
 {
+	[Header("TimerUI")]
+	public Text mainTimer;
+	public Text secondaryTimer;
+
+	[Header("Trigger")]
 	public Animator animator;
 	public Transform particleSpawnPoint;
 	public GameObject particleToSpawn;

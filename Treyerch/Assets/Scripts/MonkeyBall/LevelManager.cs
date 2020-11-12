@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using System;
 using UnityEngine.SceneManagement;
 using UnityEngine.Rendering.PostProcessing;
+using System.Collections.Generic;
 
 public class LevelManager : MonoBehaviour 
 {
@@ -17,9 +18,7 @@ public class LevelManager : MonoBehaviour
 
 	[TabGroup("References")]
 	[Header("Timer")]
-	public Text mainTimerText;
-	[TabGroup("References")]
-	public Text secondaryTimerText;
+	public List<GoalTrigger> allLevelTimers = new List<GoalTrigger>();
 	[TabGroup("References")]
 	[Header("Fallout")]
 	[SerializeField]
@@ -42,7 +41,12 @@ public class LevelManager : MonoBehaviour
 	private float rotationResetSpeed = 5;
 
 	private Quaternion _originalRotation;
-	private float timeLeft;
+
+	[HideInInspector]
+	public float timeLeft;
+
+	[HideInInspector]
+	public bool timeRanOut = false;
 
 	[TabGroup("Post Processing")]
 	public float postProcessLerp = 3f;
@@ -50,8 +54,6 @@ public class LevelManager : MonoBehaviour
 	public PostProcessVolume ppVolume;
 	[TabGroup("Post Processing")]
 	public PostProcessVolume ppPresentVolume;
-
-
 
 	private DepthOfField depthOfFieldLayer = null;
 	private DepthOfField depthOfFieldPresentLayer = null;
@@ -76,6 +78,13 @@ public class LevelManager : MonoBehaviour
 
 				if (timeLeft <= 0)
 				{
+					timeRanOut = true;
+
+					if (UIController.instance)
+					{
+						UIController.instance.ResetScore();
+					}
+
 					timeLeft = 0;
 					falloutTrigger.TriggerFallout();
 				}
@@ -175,8 +184,12 @@ public class LevelManager : MonoBehaviour
 	private void UpdateTimer()
     {
 		string[] currentTimer = FormatTime(timeLeft).Split(':');
-		mainTimerText.text = currentTimer[0];
-		secondaryTimerText.text = currentTimer[1];
+
+		foreach(GoalTrigger goal in allLevelTimers)
+        {
+			goal.mainTimer.text = currentTimer[0];
+			goal.secondaryTimer.text = currentTimer[1];
+		}
 	}
 
 	private string FormatTime(float time)

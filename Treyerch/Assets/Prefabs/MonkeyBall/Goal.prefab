@@ -2906,6 +2906,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0fa87172a641d194a93378aa57811458, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mainTimer: {fileID: 5655363328619009877}
+  secondaryTimer: {fileID: 5655363328408121713}
   animator: {fileID: 5655363328258862889}
   particleSpawnPoint: {fileID: 4193402928198804870}
   particleToSpawn: {fileID: 5915265699610587149, guid: 8f0ed536ab168a641afb9497349d2a8b,
@@ -2973,7 +2975,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5655363328258862867}
-  m_LocalRotation: {x: -0, y: -0, z: -0.5, w: 0.8660254}
+  m_LocalRotation: {x: 0, y: 0, z: -0.5, w: 0.8660254}
   m_LocalPosition: {x: 1.35, y: 1.5, z: 13.99}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -2984,7 +2986,7 @@ Transform:
   - {fileID: 5655363328741730220}
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: -60.000004}
 --- !u!23 &5655363328258862870
 MeshRenderer:
   m_ObjectHideFlags: 0

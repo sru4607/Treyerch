@@ -60,5 +60,9 @@ public class PlayerFallOutDetector : MonoBehaviour
 		player.playerCamera.ResetCamera();
 		player.playerCamera.DisableFollowMode();
 		levelTilter.ResetWorldTilt();
+		if(UIController.instance)
+        {
+			UIController.instance.ResetScore();
+		}
 	}
 }
