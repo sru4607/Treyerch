@@ -94,6 +94,8 @@ MonoBehaviour:
   launchAngle: {x: 0, y: 0, z: -2.24}
   launchPower: 80
   launcherResetTimer: 3
+  sequentialTweener: {fileID: 0}
+  activeTweens: 
 --- !u!65 &4780116682230185029
 BoxCollider:
   m_ObjectHideFlags: 0

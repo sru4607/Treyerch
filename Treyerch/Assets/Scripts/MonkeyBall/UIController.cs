@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Sirenix.OdinInspector;
+using UnityEngine.SceneManagement;
 
 public class UIController : MonoBehaviour
 {
@@ -65,12 +66,32 @@ public class UIController : MonoBehaviour
     [TabGroup("UI Elements")]
     public Transform bananaTravelPoint;
 
+    [TabGroup("UI Elements")]
+    [Header("Bottom Left")]
+    public Text mphText;
+    [TabGroup("UI Elements")]
+    public float mphSmoothing = 0.3f;
+    [TabGroup("UI Elements")]
+    public Text floorName; //"FLOOR    1"
+
+    [TabGroup("UI Elements")]
+    [Header("Minimap")]
+    public Animator minimapAnim;
+    [TabGroup("UI Elements")]
+    public Transform maskedElements;
+    [TabGroup("UI Elements")]
+    public Transform renderTexture;
+    [TabGroup("UI Elements")]
+    public Camera miniMapCamera;
+
     private bool hasStarted = false;
     private bool crackAppeared = false;
     private bool doExplode = false;
     private bool didExplode = false;
     private bool startedFlashing = false;
     private bool didPop = false;
+    private bool stopSpeedCount = true;
+    private bool calledSpeedReEnable = false;
 
     private int lastSecondSaved = 9999;
     private int bananasTotal = 0;
@@ -83,6 +104,10 @@ public class UIController : MonoBehaviour
     private int totalScoreDifference = 0;
 
     private BananaCollectable[] allBananas;
+    private float realPlayerVelocity;
+    private Vector3 positionLastFrame;
+    private int previousSpeed;
+    private Queue<int> smoothSpeeds = new Queue<int>();
 
     [HideInInspector]
     public static UIController instance; //Singleton
@@ -95,8 +120,14 @@ public class UIController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        floorName.text = "FLOOR    " + (SceneManager.GetActiveScene().buildIndex - 6);
+        mphText.text = "0";
         lastSecondSaved = levelManager.totalStageSeconds;
         explosionTrack.speed = 0.0f;
+
+        miniMapCamera.transform.parent = levelManager.transform;
+
+        smoothSpeeds.Enqueue(0);
 
         //Reset Score
         scoreCount.text = "0";
@@ -112,7 +143,7 @@ public class UIController : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
         if (currentVisibleScore != playerScore)
         {
@@ -144,7 +175,9 @@ public class UIController : MonoBehaviour
             scoreCount.text = (currentVisibleScore.ToString());
         }
 
-
+        //maskedElements.transform.localPosition = minimapAnim.transform.localPosition;
+        //maskedElements.transform.localScale = minimapAnim.transform.localScale;
+        maskedElements.transform.eulerAngles = new Vector3(0, 0, 0);
 
         if (!hasStarted)
         {
@@ -163,12 +196,65 @@ public class UIController : MonoBehaviour
 
         if (PlayerController.instance)
         {
+            Vector3 newRotation = PlayerController.instance.playerCamera.myCamera.transform.rotation.eulerAngles;
+            newRotation.x = 0;
+            newRotation.z = newRotation.y;
+            newRotation.y = 0;
+            renderTexture.transform.eulerAngles = newRotation;
+
+            if (hasStarted)
+            {
+                if (!stopSpeedCount)
+                {
+                    // pop off an item if too big
+                    while (smoothSpeeds.Count >= mphSmoothing)
+                    {
+                        previousSpeed -= smoothSpeeds.Dequeue();
+                    }
+
+                    realPlayerVelocity = Mathf.Abs(Vector3.Distance(PlayerController.instance.transform.position, positionLastFrame)) / Time.deltaTime;
+                    positionLastFrame = PlayerController.instance.transform.position;
+
+                    int currentSpeed = Mathf.RoundToInt((realPlayerVelocity * 2.237f)/2);
+
+                    if ((smoothSpeeds.Count > 0 && Mathf.Abs(currentSpeed - smoothSpeeds.Peek()) < 50) || smoothSpeeds.Count == 0)
+                    {
+                        if (currentSpeed > 999)
+                        {
+                            currentSpeed = 999;
+                        }
+                        else if (currentSpeed < 0)
+                        {
+                            currentSpeed = 0;
+                        }
+
+                        // Generate random new item, calculate new average
+                        smoothSpeeds.Enqueue(currentSpeed);
+                        previousSpeed += currentSpeed;
+
+                        if (smoothSpeeds.Count > 0)
+                        {
+                            int speedToUse = previousSpeed / smoothSpeeds.Count;
+
+                            mphText.text = speedToUse.ToString();
+                        }
+                    }
+                }
+            }
+
             if (!PlayerController.instance.isMovable)
             {
                 explosionRotation.enabled = false;
             }
             else
             {
+                if(!calledSpeedReEnable && stopSpeedCount == true)
+                {
+                    calledSpeedReEnable = true;
+                    mphText.text = "0";
+                    Invoke("ReEnableMPH", 0.5f);
+                }
+
                 if (explosionRotation.enabled == false)
                 {
                     explosionRotation.enabled = true;
@@ -242,6 +328,11 @@ public class UIController : MonoBehaviour
         }
     }
 
+    private void ReEnableMPH()
+    {
+        stopSpeedCount = false;
+    }
+
     public void ResetScore()
     {
         playerScore = 0;
@@ -259,6 +350,9 @@ public class UIController : MonoBehaviour
         totalScoreDifference = 0;
 
         scoreCount.text = "0";
+        smoothSpeeds.Enqueue(0);
+        stopSpeedCount = true;
+        calledSpeedReEnable = false;
 
         foreach (BananaCollectable banana in allBananas)
         {

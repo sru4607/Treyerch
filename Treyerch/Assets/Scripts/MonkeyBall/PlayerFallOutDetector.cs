@@ -36,6 +36,8 @@ public class PlayerFallOutDetector : MonoBehaviour
 
 		if (player.isMovable)
 		{
+			UIController.instance.minimapAnim.SetFloat("Speed", 50);
+			UIController.instance.minimapAnim.SetTrigger("SpinOut");
 			player.isMovable = false;
 			player.gameObject.tag = "Untagged";
 			player.playerCamera.SetTarget(null);

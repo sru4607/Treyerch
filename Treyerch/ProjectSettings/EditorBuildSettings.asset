@@ -24,9 +24,9 @@ EditorBuildSettings:
     path: Assets/Scenes/Bar_Scene.unity
     guid: 2b291bd7c834a1e4e8377b93dccbe2fa
   - enabled: 1
-    path: Assets/Scenes/MonekyBallTests.unity
-    guid: 4e4a7d6e27492774886491c09cc7e015
-  - enabled: 1
     path: Assets/Scenes/Frogger.unity
     guid: 2b7ed8bf91fedb046810e7136972c123
+  - enabled: 1
+    path: Assets/Scenes/MonekyBallTests.unity
+    guid: 4e4a7d6e27492774886491c09cc7e015
   m_configObjects: {}

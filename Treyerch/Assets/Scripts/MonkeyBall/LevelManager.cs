@@ -6,6 +6,7 @@ using System;
 using UnityEngine.SceneManagement;
 using UnityEngine.Rendering.PostProcessing;
 using System.Collections.Generic;
+using System.Linq;
 
 public class LevelManager : MonoBehaviour 
 {
@@ -25,8 +26,10 @@ public class LevelManager : MonoBehaviour
 	private PlayerFallOutDetector falloutTrigger;
 
 	[TabGroup("Tilt")]
-	[SerializeField]
-	private Transform cameraTransform;
+	public Transform cameraTransform;
+
+	[TabGroup("Tilt")]
+	public MeshCollider levelGeometry;
 
 	[TabGroup("Tilt")]
 	[SerializeField]
@@ -62,6 +65,7 @@ public class LevelManager : MonoBehaviour
 	void Start() 
 	{
 		_originalRotation = transform.localRotation;
+		CenterOnChildred(transform);
 
 		timeLeft = totalStageSeconds;
 		UpdateTimer();
@@ -124,6 +128,35 @@ public class LevelManager : MonoBehaviour
 				transform.localEulerAngles = new Vector3(ClampAngle(x, -maxRotationAngle, maxRotationAngle), 0, ClampAngle(z, -maxRotationAngle, maxRotationAngle));
 			}
 		}
+	}
+
+	public void CenterOnChildred(Transform aParent)
+	{
+		var childColliders = levelGeometry.transform.GetComponentsInChildren<Collider>();
+
+		Vector3 pos = Vector3.zero;
+
+		foreach (var Col in childColliders)
+		{
+			pos += Col.bounds.center;
+		}
+
+		//pos += levelGeometry.bounds.center;
+
+		Vector3 currentGlobalPos = levelGeometry.transform.position;
+
+		var childs = aParent.Cast<Transform>().ToList();
+		foreach (var C in childs)
+		{
+			C.parent = null;
+		}
+
+		aParent.position = pos;
+
+		foreach (var C in childs)
+			C.parent = aParent;
+		
+		//levelGeometry.transform.position = currentGlobalPos;
 	}
 
 	public void DoDOFFadeIn()

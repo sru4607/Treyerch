@@ -32,7 +32,7 @@ public class BananaCollectable : MonoBehaviour
         transform.localPosition = pointToReturnTo.localPosition;
 
         Sequence scaleUp = DOTween.Sequence();
-        scaleUp.Append(transform.DOScale(initialScale, 2f).SetEase(Ease.OutBack));
+        scaleUp.Append(transform.DOScale(initialScale, 1f).SetEase(Ease.OutBack));
 
         beenCollected = false;
     }
@@ -41,7 +41,7 @@ public class BananaCollectable : MonoBehaviour
     {
         if (!beenCollected)
         {
-            if (col.gameObject.layer == 9) //Player
+            if (col.gameObject.layer == 9 && PlayerController.instance.isMovable) //Player
             {
                 beenCollected = true;
 
