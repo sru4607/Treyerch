@@ -74,6 +74,10 @@ public class PlayerController : MonoBehaviour
     {
 		rigidBody.isKinematic = true;
 		transform.localScale = Vector3.zero;
+
+		UIController.instance.minimapAnim.SetTrigger("SpinIn");
+		UIController.instance.minimapAnim.SetFloat("Speed", 1);
+
 		Sequence scaleUp = DOTween.Sequence();
 		scaleUp.Append(transform.DOScale(1.5f, scaleUpTime).SetEase(scaleUpEase).OnComplete(StartMovement));
 	}

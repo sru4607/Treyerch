@@ -5,6 +5,8 @@ using UnityEngine.UI;
 using System;
 using UnityEngine.SceneManagement;
 using UnityEngine.Rendering.PostProcessing;
+using System.Collections.Generic;
+using System.Linq;
 
 public class LevelManager : MonoBehaviour 
 {
@@ -17,17 +19,17 @@ public class LevelManager : MonoBehaviour
 
 	[TabGroup("References")]
 	[Header("Timer")]
-	public Text mainTimerText;
-	[TabGroup("References")]
-	public Text secondaryTimerText;
+	public List<GoalTrigger> allLevelTimers = new List<GoalTrigger>();
 	[TabGroup("References")]
 	[Header("Fallout")]
 	[SerializeField]
 	private PlayerFallOutDetector falloutTrigger;
 
 	[TabGroup("Tilt")]
-	[SerializeField]
-	private Transform cameraTransform;
+	public Transform cameraTransform;
+
+	[TabGroup("Tilt")]
+	public MeshCollider levelGeometry;
 
 	[TabGroup("Tilt")]
 	[SerializeField]
@@ -42,7 +44,12 @@ public class LevelManager : MonoBehaviour
 	private float rotationResetSpeed = 5;
 
 	private Quaternion _originalRotation;
-	private float timeLeft;
+
+	[HideInInspector]
+	public float timeLeft;
+
+	[HideInInspector]
+	public bool timeRanOut = false;
 
 	[TabGroup("Post Processing")]
 	public float postProcessLerp = 3f;
@@ -51,8 +58,6 @@ public class LevelManager : MonoBehaviour
 	[TabGroup("Post Processing")]
 	public PostProcessVolume ppPresentVolume;
 
-
-
 	private DepthOfField depthOfFieldLayer = null;
 	private DepthOfField depthOfFieldPresentLayer = null;
 
@@ -60,6 +65,7 @@ public class LevelManager : MonoBehaviour
 	void Start() 
 	{
 		_originalRotation = transform.localRotation;
+		CenterOnChildred(transform);
 
 		timeLeft = totalStageSeconds;
 		UpdateTimer();
@@ -76,6 +82,13 @@ public class LevelManager : MonoBehaviour
 
 				if (timeLeft <= 0)
 				{
+					timeRanOut = true;
+
+					if (UIController.instance)
+					{
+						UIController.instance.ResetScore();
+					}
+
 					timeLeft = 0;
 					falloutTrigger.TriggerFallout();
 				}
@@ -115,6 +128,35 @@ public class LevelManager : MonoBehaviour
 				transform.localEulerAngles = new Vector3(ClampAngle(x, -maxRotationAngle, maxRotationAngle), 0, ClampAngle(z, -maxRotationAngle, maxRotationAngle));
 			}
 		}
+	}
+
+	public void CenterOnChildred(Transform aParent)
+	{
+		var childColliders = levelGeometry.transform.GetComponentsInChildren<Collider>();
+
+		Vector3 pos = Vector3.zero;
+
+		foreach (var Col in childColliders)
+		{
+			pos += Col.bounds.center;
+		}
+
+		//pos += levelGeometry.bounds.center;
+
+		Vector3 currentGlobalPos = levelGeometry.transform.position;
+
+		var childs = aParent.Cast<Transform>().ToList();
+		foreach (var C in childs)
+		{
+			C.parent = null;
+		}
+
+		aParent.position = pos;
+
+		foreach (var C in childs)
+			C.parent = aParent;
+		
+		//levelGeometry.transform.position = currentGlobalPos;
 	}
 
 	public void DoDOFFadeIn()
@@ -175,8 +217,12 @@ public class LevelManager : MonoBehaviour
 	private void UpdateTimer()
     {
 		string[] currentTimer = FormatTime(timeLeft).Split(':');
-		mainTimerText.text = currentTimer[0];
-		secondaryTimerText.text = currentTimer[1];
+
+		foreach(GoalTrigger goal in allLevelTimers)
+        {
+			goal.mainTimer.text = currentTimer[0];
+			goal.secondaryTimer.text = currentTimer[1];
+		}
 	}
 
 	private string FormatTime(float time)

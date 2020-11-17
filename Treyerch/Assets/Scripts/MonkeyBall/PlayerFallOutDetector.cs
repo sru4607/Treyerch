@@ -36,6 +36,8 @@ public class PlayerFallOutDetector : MonoBehaviour
 
 		if (player.isMovable)
 		{
+			UIController.instance.minimapAnim.SetFloat("Speed", 50);
+			UIController.instance.minimapAnim.SetTrigger("SpinOut");
 			player.isMovable = false;
 			player.gameObject.tag = "Untagged";
 			player.playerCamera.SetTarget(null);
@@ -60,5 +62,9 @@ public class PlayerFallOutDetector : MonoBehaviour
 		player.playerCamera.ResetCamera();
 		player.playerCamera.DisableFollowMode();
 		levelTilter.ResetWorldTilt();
+		if(UIController.instance)
+        {
+			UIController.instance.ResetScore();
+		}
 	}
 }
